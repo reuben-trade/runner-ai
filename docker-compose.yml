@@ -1,0 +1,19 @@
+services:
+  dev-backend:
+    build: ./backend
+    container_name: dev-backend
+    ports:
+      - 5000:5000
+    volumes:
+      - ./backend:/app
+
+  dev-frontend:
+    build: ./frontend
+    container_name: dev-frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - dev-backend

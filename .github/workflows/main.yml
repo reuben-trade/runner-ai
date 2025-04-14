@@ -1,0 +1,53 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: |
+            -----BEGIN OPENSSH PRIVATE KEY-----
+            b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+            QyNTUxOQAAACBRO89vRSH1hjVFEuXS4l9LB4zVCRVXi8gHhGP23cKQVAAAAKC5M4sUuTOL
+            FAAAAAtzc2gtZWQyNTUxOQAAACBRO89vRSH1hjVFEuXS4l9LB4zVCRVXi8gHhGP23cKQVA
+            AAAECG/1/WXCyE1EOF2RoKK2LvvbdTCcXKBmPkx4NmYRFVXFE7z29FIfWGNUUS5dLiX0sH
+            jNUJFVeLyAeEY/bdwpBUAAAAGWdpdGh1Yi1hY3Rpb25zLWRlcGxveS1rZXkBAgME
+            -----END OPENSSH PRIVATE KEY-----
+
+      - name: Sync files to VPS
+        run: |
+          rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            --exclude='.git/' \
+            ./ root@bazaar-null.bnr.la:/root/app/
+
+      - name: Update env files and launch Docker
+        run: |
+          ssh -o StrictHostKeyChecking=no root@bazaar-null.bnr.la << 'EOF'
+          # Create directories if they don't exist
+          mkdir -p /root/app/backend
+          mkdir -p /root/app/frontend
+          # Replace environment files
+          echo "Updating environment files from template..."
+          cp -f /root/app/server_keys /root/app/backend/.env.local
+          cp -f /root/app/server_keys /root/app/frontend/.env.local
+          # Set secure permissions
+          chmod 600 /root/app/backend/.env.local
+          chmod 600 /root/app/frontend/.env.local
+          # Launch Docker
+          echo "Starting Docker containers..."
+          cd /root/app
+          docker-compose down
+          docker-compose pull
+          docker-compose -f docker-compose.prod.yml up -d --build
+          echo "Deployment complete!"
+          EOF

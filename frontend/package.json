@@ -1,0 +1,47 @@
+{
+  "name": "voice-assistant2",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "https": "next dev --experimental-https",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write ."
+  },
+  "dependencies": {
+    "@datadog/browser-logs": "^5.35.1",
+    "@livekit/components-react": "^2.9.0",
+    "@livekit/components-styles": "^1.1.5",
+    "@livekit/krisp-noise-filter": "^0.2.16",
+    "framer-motion": "^11.18.2",
+    "livekit-client": "^2.9.9",
+    "livekit-server-sdk": "^2.11.0",
+    "next": "14.2.24",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tinykeys": "^3.0.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/node": "^20.17.30",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.6",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.26",
+    "eslint-config-prettier": "9.1.0",
+    "next": "14",
+    "postcss": "^8.5.3",
+    "prettier": "^3.5.3",
+    "source-map-loader": "^5.0.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.2"
+  },
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=18"
+  }
+}
